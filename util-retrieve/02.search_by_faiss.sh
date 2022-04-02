@@ -11,12 +11,12 @@ do
         PM=''
     fi
 
+    # 検索対象は目的言語側のみ
     python 02.search_by_faiss.py \
         -q    ${DIR}.sbert/emb/${prefix}.en.emb \
         -qt   ${DIR}/${CORPUS}_$prefix.en.tkn \
-        -tms  ${DIR}.sbert/emb/train.en.emb \
+        -tms  ${DIR}.sbert/emb/train.ja.emb \
         -tmst ${DIR}/${CORPUS}_train.en.tkn \
-        -tmt  ${DIR}.sbert/emb/train.ja.emb \
         -o    ${DIR}.sbert/match/${prefix}.match \
         -k 10 -d 768 $PM
     wait
