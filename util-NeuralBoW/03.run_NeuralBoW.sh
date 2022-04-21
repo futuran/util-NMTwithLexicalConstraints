@@ -17,3 +17,4 @@ python ../../NeuralBoW/NeuralBoW.py  -train_in4nbow  $DIR/${CORPUS}_train_h40000
                                     -only_predict True
 
 # testの結果
+# [[10454, 106, 4361], [118, 801, 349], [3471, 223, 846037]]
