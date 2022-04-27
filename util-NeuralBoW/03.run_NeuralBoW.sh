@@ -14,7 +14,11 @@ python ../../NeuralBoW/NeuralBoW.py  -train_in4nbow  $DIR/${CORPUS}_train_h40000
                                     -test_numofsim  $DIR/${CORPUS}_test.numofsim \
                                     -corpus_name ${CORPUS} \
                                     -output_dir ../../experiments/nbow.${CORPUS}_h40000.sbert \
-                                    -only_predict True
+                                    #-only_predict True
 
 # testの結果
+# ASPEC
 # [[10454, 106, 4361], [118, 801, 349], [3471, 223, 846037]]
+
+# KFTT
+# [[0, 0, 3159], [0, 0, 283], [0, 0, 415453]]

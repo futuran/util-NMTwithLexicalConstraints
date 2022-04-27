@@ -17,4 +17,7 @@ python ../../NeuralBoW/NeuralBoW.py  -train_in4nbow  $DIR/${CORPUS}_train_h40000
                                     #-only_predict True
 
 # testの結果
+# ASPEC
 # [[17290, 266, 5397], [199, 1837, 489], [5242, 538, 940338]]
+# KFTT
+# [[0, 0, 6866], [0, 0, 781], [0, 0, 505241]]

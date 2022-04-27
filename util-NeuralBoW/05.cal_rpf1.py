@@ -1,6 +1,6 @@
 import numpy as np
 
-results = np.array([[20791, 498, 6516], [354, 3417, 1109], [5973, 1061, 922576]])
+results = np.array([[20654, 546, 6497], [321, 3420, 1121], [5886, 1048, 917411]])
 all = np.sum(results)
 TP = np.sum(results[:1,:1]) / all
 FN = np.sum(results[:1,2]) / all

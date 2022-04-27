@@ -16,6 +16,7 @@ do
         -q    ${DIR}.sbert/emb/${prefix}.en.emb \
         -qt   ${DIR}/${CORPUS}_$prefix.en.tkn \
         -tms  ${DIR}.sbert/emb/train.en.emb \
+        -tmt  ${DIR}.sbert/emb/train.ja.emb \
         -tmst ${DIR}/${CORPUS}_train.en.tkn \
         -o    ${DIR}.sbert_both/match/${prefix}.match \
         -k 10 -d 768 $PM
