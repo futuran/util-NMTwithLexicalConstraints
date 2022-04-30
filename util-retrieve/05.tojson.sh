@@ -1,6 +1,6 @@
 CORPUS=$1
 DIR=../../data/${CORPUS}
-dir=${DIR}.sbert_trgonly/merge.top1/
+dir=${DIR}.sbert/merge.top1/
 
 for tvt in train_h40000 dev test;
 do
