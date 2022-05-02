@@ -1,0 +1,165 @@
+import argparse
+from itertools import count
+from tempfile import tempdir
+import spacy
+import numpy as np
+
+en = spacy.load('en_core_web_sm')
+ja = spacy.load('ja_core_news_sm')
+en_stopwords = en.Defaults.stop_words
+ja_stopwords = ja.Defaults.stop_words
+
+sw_general = set([  'について',
+                    'として', 
+                    'による', 'により', 'によって', 
+                    'これら',
+                    'における', 'において',
+                    'に関する', 'に関して',
+                    'に対する', 'に対して',
+                    '及び', 'および'])
+
+sw_one_bite = set(list('1234567890!"#$%&\'()*+-.,/:;<=>?@[]^_`{|}~¥ '))
+sw_two_bite = set(list('１２３４５６７８９０！”＃＄％＆’（）＊＋ー。、＼：；＜＝＞？＠「」＾＿｀『｜』〜￥　，．・／‐［］'))
+
+additional_stopword = sw_general | sw_one_bite | sw_two_bite
+
+
+# OracleとProposedの重複率
+def duplicate_rate(oracle_list, proposed_list):
+    counts = [0,0,0]
+    # [Oracleにのみ含まれる単語数, どちらにも含まれる単語数, Proposedにのみ含まれる単語数]
+    # 1文の中で複数回同じ単語が出てきてもそれは１回として数える
+    for oracle, proposed in zip(oracle_list, proposed_list):
+        counts[0] += len(set(oracle) - set(proposed))
+        counts[1] += len(set(oracle) & set(proposed))
+        counts[2] += len(set(proposed) - set(oracle))
+
+    # print("[Oracleにのみ含まれる単語数, どちらにも含まれる単語数, Proposedにのみ含まれる単語数]")
+    out = np.array([x/len(oracle_list) for x in counts])
+    # print(np.round(out, 2))
+    # print([x/len(oracle_list) for x in counts])
+    return out
+
+# 制約語彙によるリファレンス文のカバー率
+def cover_rate_lexiconst(ref_list, op_list):
+    counts = [0,0,0]
+    # [refにのみ含まれる単語数, どちらにも含まれる単語数, opにのみ含まれる単語数]
+    for ref, op in zip(ref_list, op_list):
+        ref_vocab = set(ref) - set(ja_stopwords) - set(additional_stopword)
+        # print(ref_vocab - set(op))
+        counts[0] += len(ref_vocab - set(op))
+        counts[1] += len(ref_vocab & set(op))
+        # print(set(op) - ref_vocab)
+        counts[2] += len(set(op) - ref_vocab)
+    
+    # print("[refにのみ含まれる単語数, どちらにも含まれる単語数, opにのみ含まれる単語数]")
+    out = np.array([x/len(ref_list) for x in counts])
+    # print([x/len(ref_list) for x in counts])
+    return out
+
+# 類似文によるリファレンス文のカバー率
+def cover_rate_with_sim(ref_list, sim_list):
+    counts = [0,0,0]
+    # [refにのみ含まれる単語数, どちらにも含まれる単語数, opにのみ含まれる単語数]
+    for ref, sim in zip(ref_list, sim_list):
+        ref_vocab = set(ref) - set(ja_stopwords) - set(additional_stopword)
+        sim_vocab = set(sim) - set(ja_stopwords) - set(additional_stopword)
+        # print(ref_vocab - set(op))
+        counts[0] += len(ref_vocab - sim_vocab)
+        counts[1] += len(ref_vocab & sim_vocab)
+        # print(set(op) - ref_vocab)
+        counts[2] += len(sim_vocab - ref_vocab)
+    
+    # print("[refにのみ含まれる単語数, どちらにも含まれる単語数, opにのみ含まれる単語数]")
+    out = np.array([x/len(ref_list) for x in counts])
+    # print(np.round(out, 2))
+    # print([x/len(ref_list) for x in counts])
+    return out
+
+def load(args):
+    with open(args.ref) as f:
+        ref_list = f.readlines()
+    ref_list = [x.strip().split() for x in ref_list]
+
+    if args.sim != None:
+        with open(args.sim) as f:
+            sim_list = f.readlines()
+        multiple_sim_list = []
+        for i in range(int(args.topk)):
+            tmp_sim_list =[]
+            for sim in sim_list:
+                tmp = ' '.join(sim.strip().split('|')[1:i+2]).split()
+                tmp_sim_list.append(tmp)
+            multiple_sim_list.append(tmp_sim_list)
+        
+        # import pprint
+        # pprint.pprint(multiple_sim_list[0][:10])
+
+        sim_list = [x[x.index('|')+1:].strip().split() for x in sim_list]
+    else:
+        multiple_sim_list = None
+
+    if args.oracle != None:
+        with open(args.oracle) as f:
+            oracle_list = f.readlines()
+        oracle_list = [x[x.index('|')+1:].replace('|','').strip().split() for x in oracle_list]
+    else:
+        oracle_list = None
+
+    if args.proposed != None:
+        with open(args.proposed) as f:
+            proposed_list = f.readlines()
+        proposed_list = [x[x.index('|')+1:].strip().split() for x in proposed_list]
+    else:
+        proposed_list = None
+
+    return ref_list, multiple_sim_list, oracle_list, proposed_list
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-ref')
+    parser.add_argument('-sim', default=None)
+    parser.add_argument('-oracle', default=None)
+    parser.add_argument('-proposed',  default=None)
+    parser.add_argument('-topk', default=10)
+
+    args = parser.parse_args()
+
+    ref_list, multiple_sim_list, oracle_list, proposed_list = load(args)
+
+    if args.oracle != None and args.proposed != None:
+        print('OracleとProposedの重複率：')
+        print("[Oracleにのみ含まれる単語数, どちらにも含まれる単語数, Proposedにのみ含まれる単語数]")
+        out = duplicate_rate(oracle_list, proposed_list)
+        print(np.round(out, 2))
+
+    # ReferenceとOracleの重複率
+    if args.oracle != None:
+        print('\nReferenceとOracleの重複率：')
+        print("[refにのみ含まれる単語数, どちらにも含まれる単語数, opにのみ含まれる単語数]")
+        out = cover_rate_lexiconst(ref_list, oracle_list)
+        print(np.round(out, 2))
+
+    # ReferenceとProposedの重複率
+    if args.proposed != None:
+        print('\nReferenceとProposedの重複率：')
+        print("[refにのみ含まれる単語数, どちらにも含まれる単語数, opにのみ含まれる単語数]")
+        out = cover_rate_lexiconst(ref_list, proposed_list)
+        print(np.round(out, 2))
+
+    # Referenceと第１類似文〜第i類似文の重複率
+    coverages_ref_sim = np.zeros((int(args.topk),3))
+    print(coverages_ref_sim[0])
+    for i in range(int(args.topk)):
+        print('\nReferenceと第１類似文〜第{}類似文の重複率：'.format(i+1))
+        print("[refにのみ含まれる単語数, どちらにも含まれる単語数, opにのみ含まれる単語数]")
+        out = cover_rate_with_sim(ref_list, multiple_sim_list[i])
+        # coverages_ref_sim.append(out)
+        coverages_ref_sim[i] = out
+        # print(np.round(out, 2))
+    print(np.round(coverages_ref_sim,2))
+
+
+
+
+main()
