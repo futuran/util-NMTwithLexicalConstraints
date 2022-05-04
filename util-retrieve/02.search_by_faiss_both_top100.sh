@@ -1,7 +1,7 @@
 CORPUS=$1
 DIR=../../data/${CORPUS}
 
-mkdir ${DIR}.sbert_top100/match
+mkdir -p ${DIR}.sbert_both_top100/match
 # 2 search by faiss
 for prefix in dev test train_h40000
 do
@@ -11,13 +11,14 @@ do
         PM=''
     fi
 
-    # 検索対象は目的言語側のみ
+    # 検索対象は原言語側のみ
     python 02.search_by_faiss.py \
         -q    ${DIR}.sbert/emb/${prefix}.en.emb \
         -qt   ${DIR}/${CORPUS}_$prefix.en.tkn \
-        -tms  ${DIR}.sbert/emb/train.ja.emb \
+        -tms  ${DIR}.sbert/emb/train.en.emb \
+        -tmt  ${DIR}.sbert/emb/train.ja.emb \
         -tmst ${DIR}/${CORPUS}_train.en.tkn \
-        -o    ${DIR}.sbert_top100/match/${prefix}.match \
+        -o    ${DIR}.sbert_both_top100/match/${prefix}.match \
         -k 100 -d 768 $PM
     wait
 done

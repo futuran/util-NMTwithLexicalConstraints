@@ -13,9 +13,8 @@ python ../../NeuralBoW/NeuralBoW.py  -train_in4nbow  $DIR/${CORPUS}_train_h40000
                                     -test_ref4nbow  $DIR/${CORPUS}_test.ref4nbow \
                                     -test_numofsim  $DIR/${CORPUS}_test.numofsim \
                                     -corpus_name ${CORPUS} \
-                                    -output_dir ../../experiments/nbow.${CORPUS}_h40000.sbert_top100_for_analyze \
-                                    -only_predict True \
-                                    -big_boundary '||'
+                                    -output_dir ../../experiments/nbow.${CORPUS}_h40000.sbert_top100 \
+                                    -only_predict True
 
 # testの結果
 # ASPEC

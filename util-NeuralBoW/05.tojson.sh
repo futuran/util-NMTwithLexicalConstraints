@@ -1,4 +1,4 @@
-TYPE="_srconly"
+TYPE="_srconly_top100"
 CORPUS=$1
 dir_oracle=../../data/${CORPUS}.sbert$TYPE.oracle/
 dir_assisted=../../experiments/nbow.${CORPUS}_h40000.sbert$TYPE
