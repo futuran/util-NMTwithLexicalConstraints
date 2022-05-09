@@ -1,3 +1,5 @@
+# 語彙制約で参照訳文をどれだけカバーできるかを調査
+
 TYPE="_srconly"
 CORPUS=$1
 dir_ref=../../data/${CORPUS}/

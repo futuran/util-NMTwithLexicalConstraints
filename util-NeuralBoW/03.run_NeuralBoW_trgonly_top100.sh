@@ -15,15 +15,11 @@ python ../../NeuralBoW/NeuralBoW.py  -train_in4nbow  $DIR/${CORPUS}_train_h40000
                                     -corpus_name ${CORPUS} \
                                     -output_dir ../../experiments/nbow.${CORPUS}_h40000.sbert_trgonly \
                                     -only_predict True \
-                                    -output_file_suffix '.assisted_top100.src.tkn.for_analyze' \
-                                    -big_boundary '||'
-
-
-OUTDIR=../../experiments/nbow.${CORPUS}_h40000.sbert_trgonly/
-sed 's/||/|/g' $OUTDIR/${CORPUS}_test.assisted_top100.src.tkn.for_analyze > $OUTDIR/${CORPUS}_test.assisted_top100.src.tkn
+                                    -output_file_suffix '.assisted_top100.src.tkn' \
+                                    -topk_of_sim 100
 
 # testの結果
 # ASPEC
-# 
+# [[126174, 1488, 41148], [1060, 9324, 2651], [42074, 3242, 9538231]]
 # KFTT
 # 
