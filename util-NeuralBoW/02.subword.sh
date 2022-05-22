@@ -1,4 +1,4 @@
-TYPE=""
+TYPE="_top100"
 CORPUS=$1
 DIR=../../data/${CORPUS}
 

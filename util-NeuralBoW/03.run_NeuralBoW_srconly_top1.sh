@@ -1,6 +1,6 @@
 # XLM-RoBERTaに基づくフレーズ抽出モデル訓練のためのデータセット作成
 CORPUS=$1
-DIR=../../data/${CORPUS}.sbert_srconly_top100.NBoW
+DIR=../../data/${CORPUS}.sbert_srconly_top1.NBoW
 
 # ${CORPUS}のみ
 python ../../NeuralBoW/NeuralBoW.py  -train_in4nbow  $DIR/${CORPUS}_train_h40000.in4nbow \
@@ -15,11 +15,10 @@ python ../../NeuralBoW/NeuralBoW.py  -train_in4nbow  $DIR/${CORPUS}_train_h40000
                                     -corpus_name ${CORPUS} \
                                     -output_dir ../../experiments/nbow.${CORPUS}_h40000.sbert_srconly \
                                     -only_predict True \
-                                    -output_file_suffix '.assisted_top100.src.tkn' \
-                                    -topk_of_sim 100
+                                    -output_file_suffix '.assisted_top1.src.tkn' \
+                                    -topk_of_sim 1
 
 # testの結果
 # ASPEC
-# [[157474, 3009, 52501], [2105, 18593, 6262], [50794, 6645, 9453675]]
+# [[2537, 83, 787], [49, 575, 145], [707, 159, 90438]]
 # KFTT
-# [[30197, 410, 17089], [375, 2133, 1168], [16327, 1094, 4806667]]

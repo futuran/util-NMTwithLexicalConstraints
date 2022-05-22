@@ -22,4 +22,4 @@ python ../../NeuralBoW/NeuralBoW.py  -train_in4nbow  $DIR/${CORPUS}_train_h40000
 # ASPEC
 # [[126174, 1488, 41148], [1060, 9324, 2651], [42074, 3242, 9538231]]
 # KFTT
-# 
+# [[0, 0, 35821], [0, 0, 2410], [0, 0, 5119262]]

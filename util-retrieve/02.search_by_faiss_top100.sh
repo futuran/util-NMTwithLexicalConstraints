@@ -1,7 +1,7 @@
 CORPUS=$1
 DIR=../../data/${CORPUS}
 
-mkdir ${DIR}.sbert_top100/match
+mkdir -p ${DIR}.sbert_top100/match
 # 2 search by faiss
 for prefix in dev test train_h40000
 do
