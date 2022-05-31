@@ -156,7 +156,7 @@ def main():
     args = parser.parse_args()
 
     ref_list, out_list, multiple_sim_list, oracle_list, proposed_list = load(args)
-    multiple_proposed_list = load_multiple_proposed_list(args)
+    # multiple_proposed_list = load_multiple_proposed_list(args)
 
     # if args.oracle != None and args.proposed != None:
     #     print('OracleとProposedの重複率：')
@@ -186,33 +186,33 @@ def main():
 
 
     # # Referenceと第１類似文〜第i類似文の重複率
-    # if args.sim != None:   
-    #     coverages_ref_sim = np.zeros((int(args.topk),3))
-    #     for i in range(int(args.topk)):
-    #         # print('\nReferenceと第１類似文〜第{}類似文の重複率：'.format(i+1))
-    #         # print("[refにのみ含まれる単語数, どちらにも含まれる単語数, opにのみ含まれる単語数]")
-    #         coverages_ref_sim[i] = cover_rate_with_sim(ref_list, multiple_sim_list[i])
-    #         # print(np.round(out, 2))
-    #     print('\nReferenceと第１類似文〜第100類似文の重複率：')
-    #     print("[refにのみ含まれる単語数, どちらにも含まれる単語数, opにのみ含まれる単語数]")
-    #     print(np.round(coverages_ref_sim,2))
+    if args.sim != None:   
+        coverages_ref_sim = np.zeros((int(args.topk),3))
+        for i in range(int(args.topk)):
+            # print('\nReferenceと第１類似文〜第{}類似文の重複率：'.format(i+1))
+            # print("[refにのみ含まれる単語数, どちらにも含まれる単語数, opにのみ含まれる単語数]")
+            coverages_ref_sim[i] = cover_rate_with_sim(ref_list, multiple_sim_list[i])
+            # print(np.round(out, 2))
+        print('\nReferenceと第１類似文〜第100類似文の重複率：')
+        print("[refにのみ含まれる単語数, どちらにも含まれる単語数, opにのみ含まれる単語数]")
+        print(np.round(coverages_ref_sim,2))
 
 
     # 制約語彙によるリファレンス文のカバー率と、それらがベースラインで翻訳できたか否かを分類
-    if args.out != None and args.multiple_proposed != None:
-        componet_raio_of_ref_list = np.zeros((int(args.topk),4))
-        for i in range(int(args.topk)):
-            componet_raio_of_ref_list[i] = componet_raio_of_ref(ref_list,multiple_proposed_list[i], out_list)
+    # if args.out != None and args.multiple_proposed != None:
+    #     componet_raio_of_ref_list = np.zeros((int(args.topk),4))
+    #     for i in range(int(args.topk)):
+    #         componet_raio_of_ref_list[i] = componet_raio_of_ref(ref_list,multiple_proposed_list[i], out_list)
             
-        print(np.round(componet_raio_of_ref_list,2))
-        np.savetxt('tmp1.csv', componet_raio_of_ref_list, delimiter=',', fmt='%f')
+    #     print(np.round(componet_raio_of_ref_list,2))
+    #     np.savetxt('tmp1.csv', componet_raio_of_ref_list, delimiter=',', fmt='%f')
 
-    if args.out != None and args.multiple_proposed != None:
-        componet_raio_of_ref_list = np.zeros((int(args.topk),4))
-        for i in range(int(args.topk)):
-            componet_raio_of_ref_list[i] = componet_raio_of_ref(ref_list,multiple_sim_list[i], out_list)
+    # if args.out != None and args.multiple_proposed != None:
+    #     componet_raio_of_ref_list = np.zeros((int(args.topk),4))
+    #     for i in range(int(args.topk)):
+    #         componet_raio_of_ref_list[i] = componet_raio_of_ref(ref_list,multiple_sim_list[i], out_list)
             
-        print(np.round(componet_raio_of_ref_list,2))
-        np.savetxt('tmp2.csv', componet_raio_of_ref_list, delimiter=',', fmt='%f')
+    #     print(np.round(componet_raio_of_ref_list,2))
+    #     np.savetxt('tmp2.csv', componet_raio_of_ref_list, delimiter=',', fmt='%f')
 
 main()

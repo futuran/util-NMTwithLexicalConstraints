@@ -18,33 +18,32 @@ done
 
 
 # Top100
+mkdir -p ${DIR}.sbert_top100.oracle
+mkdir -p ${DIR}.sbert_top100.NBoW
 
-# mkdir -p ${DIR}.sbert_top100.oracle
-# mkdir -p ${DIR}.sbert_top100.NBoW
+for tvt in dev test train_h40000
+do
+    python 01.preprocess_NeuralBoW.py  -src            ${DIR}.sbert_top100/merge.top100/${CORPUS}_$tvt.en.with_match.tkn \
+                                    -ref            ${DIR}.sbert_top100/merge.top100/${CORPUS}_$tvt.ja.with_match.tkn \
+                                    -out_in4oracle  ${DIR}.sbert_top100.oracle/${CORPUS}_$tvt.oracle.src.tkn \
+                                    -out_ref4oracle ${DIR}.sbert_top100.oracle/${CORPUS}_$tvt.oracle.trg.tkn \
+                                    -out_in4nbow    ${DIR}.sbert_top100.NBoW/${CORPUS}_$tvt.in4nbow \
+                                    -out_ref4nbow   ${DIR}.sbert_top100.NBoW/${CORPUS}_$tvt.ref4nbow \
+                                    -out_numofsim   ${DIR}.sbert_top100.NBoW/${CORPUS}_$tvt.numofsim
+done
 
-# for tvt in dev test train_h40000
-# do
-#     python 01.preprocess_NeuralBoW.py  -src            ${DIR}.sbert_top100/merge.top100/${CORPUS}_$tvt.en.with_match.tkn \
-#                                     -ref            ${DIR}.sbert_top100/merge.top100/${CORPUS}_$tvt.ja.with_match.tkn \
-#                                     -out_in4oracle  ${DIR}.sbert_top100.oracle/${CORPUS}_$tvt.oracle.src.tkn \
-#                                     -out_ref4oracle ${DIR}.sbert_top100.oracle/${CORPUS}_$tvt.oracle.trg.tkn \
-#                                     -out_in4nbow    ${DIR}.sbert_top100.NBoW/${CORPUS}_$tvt.in4nbow \
-#                                     -out_ref4nbow   ${DIR}.sbert_top100.NBoW/${CORPUS}_$tvt.ref4nbow \
-#                                     -out_numofsim   ${DIR}.sbert_top100.NBoW/${CORPUS}_$tvt.numofsim
-# done
 
 # Top1
+mkdir -p ${DIR}.sbert_top1.oracle
+mkdir -p ${DIR}.sbert_top1.NBoW
 
-# mkdir -p ${DIR}.sbert_top1.oracle
-# mkdir -p ${DIR}.sbert_top1.NBoW
-
-# for tvt in dev test train_h40000
-# do
-#     python 01.preprocess_NeuralBoW.py  -src            ${DIR}.sbert_top100/merge.top1/${CORPUS}_$tvt.en.with_match.tkn \
-#                                     -ref            ${DIR}.sbert_top100/merge.top1/${CORPUS}_$tvt.ja.with_match.tkn \
-#                                     -out_in4oracle  ${DIR}.sbert_top1.oracle/${CORPUS}_$tvt.oracle.src.tkn \
-#                                     -out_ref4oracle ${DIR}.sbert_top1.oracle/${CORPUS}_$tvt.oracle.trg.tkn \
-#                                     -out_in4nbow    ${DIR}.sbert_top1.NBoW/${CORPUS}_$tvt.in4nbow \
-#                                     -out_ref4nbow   ${DIR}.sbert_top1.NBoW/${CORPUS}_$tvt.ref4nbow \
-#                                     -out_numofsim   ${DIR}.sbert_top1.NBoW/${CORPUS}_$tvt.numofsim
-# done
+for tvt in dev test train_h40000
+do
+    python 01.preprocess_NeuralBoW.py  -src            ${DIR}.sbert_top100/merge.top1/${CORPUS}_$tvt.en.with_match.tkn \
+                                    -ref            ${DIR}.sbert_top100/merge.top1/${CORPUS}_$tvt.ja.with_match.tkn \
+                                    -out_in4oracle  ${DIR}.sbert_top1.oracle/${CORPUS}_$tvt.oracle.src.tkn \
+                                    -out_ref4oracle ${DIR}.sbert_top1.oracle/${CORPUS}_$tvt.oracle.trg.tkn \
+                                    -out_in4nbow    ${DIR}.sbert_top1.NBoW/${CORPUS}_$tvt.in4nbow \
+                                    -out_ref4nbow   ${DIR}.sbert_top1.NBoW/${CORPUS}_$tvt.ref4nbow \
+                                    -out_numofsim   ${DIR}.sbert_top1.NBoW/${CORPUS}_$tvt.numofsim
+done

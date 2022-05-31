@@ -55,23 +55,26 @@ def pca(df):
     # pd.DataFrame(feature, columns=["PC{}".format(x + 1) for x in range(len(dfs.columns))]).head()
     # 第一主成分と第二主成分でプロットする
     plt.figure(figsize=(6, 6))
-    # plt.scatter(feature[:, 76], feature[:, 760], alpha=0.8, c=list(df.iloc[:, -1]))
-    # plt.grid()
-    # plt.xlabel("PC1")
-    # plt.ylabel("PC2")
-    # plt.show()
-    # plt.savefig('pca.png')
+    # plt.scatter(feature[:, 383], feature[:, 384], alpha=0.8, c=list(df.iloc[:, -1]))
+    plt.scatter(feature[:, 0], feature[:, 1], alpha=0.8, c=list(df.iloc[:, -1]))
+    plt.grid()
+    plt.xlabel("PC1")
+    plt.ylabel("PC2")
+    plt.show()
+    plt.savefig('pca.png')
 
     # PCA の固有値
     koyuchi = pd.DataFrame(pca.explained_variance_, index=["PC{}".format(x + 1) for x in range(len(dfs.columns))])
-    print(koyuchi)
-    koyuchi.to_csv('eigenvalue.csv')
-    plt.grid()
-    plt.bar(range(len(koyuchi)), koyuchi, width=1)
-    plt.xlabel("rank")
-    plt.ylabel("size")
-    plt.show()
-    plt.savefig('pcaed_size.png')
+    # print(koyuchi.values)
+    # koyuchi.values.to_csv('eigenvalue.csv')
+    np.savetxt('eigenvalue.csv', koyuchi.values)
+
+    # plt.grid()
+    # plt.bar(range(len(koyuchi)), koyuchi, width=1)
+    # plt.xlabel("rank")
+    # plt.ylabel("size")
+    # plt.show()
+    # plt.savefig('pcaed_size.png')
 
 
 
@@ -95,10 +98,17 @@ def main():
     print('Ja/Norm:\n',summary(np.linalg.norm(ja_emb, axis=1)))
 
 
+    print(np.linalg.norm(np.mean(en_emb, axis=0)))
+    print(np.linalg.norm(np.mean(ja_emb, axis=0)))
+    print(np.linalg.norm(np.mean(en_emb, axis=0) - np.mean(ja_emb, axis=0)))
+
+    print('En/Norm:\n',summary(np.mean(en_emb, axis=0)))
+    print('Ja/Norm:\n',summary(np.mean(ja_emb, axis=0)))
+
 
     # PCA
-    # pca(pd.concat([df_en_emb, df_ja_emb]))
-    pca(df_ja_emb)
+    pca(pd.concat([df_en_emb, df_ja_emb]))
+    # pca(df_ja_emb)
 
 
 
