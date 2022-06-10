@@ -12,6 +12,7 @@ fi
 
 mkdir ${DIR}.$MODEL/match_srctrg
 mkdir ${DIR}.$MODEL/match_srcsrc
+
 # 2 search by faiss
 for prefix in dev test train_h40000
 do

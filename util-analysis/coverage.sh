@@ -1,11 +1,21 @@
 # 語彙制約で参照訳文をどれだけカバーできるかを調査
-
-TYPE="_srcsrc"
 CORPUS=$1
-MODEL="labse"
-ORIG=""
+if [ "$CORPUS" = "" ]; then
+    echo "Please designate CORPUS!!!"
+    exit
+fi
+
+MODEL=$2
+if [ "$MODEL" = "" ]; then
+    echo "Please designate MODEL!!!"
+    exit
+fi
+
+
+TYPE="_srctrg"
 dir_ref=../../data/${CORPUS}/
-dir_nfr=../../data/${CORPUS}.$MODEL/${ORIG}merge$TYPE.top100/
+dir_nfr=../../data/${CORPUS}.$MODEL/merge$TYPE.top100/
+
 dir_oracle=../../data/${CORPUS}.$MODEL$TYPE.oracle/
 dir_assisted=../../experiments/nbow.${CORPUS}_h40000.$MODEL$TYPE/
 

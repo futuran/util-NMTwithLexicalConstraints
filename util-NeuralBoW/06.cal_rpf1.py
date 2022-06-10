@@ -7,7 +7,7 @@ import numpy as np
 #    I     |   |   |
 #    O     |   |   |
 
-results = np.array([[77638, 664, 34822], [675, 4547, 2088], [27072, 1241, 8585615]])
+results = np.array([[20803, 523, 6507], [319, 3478, 1087], [6040, 1127, 923040]])
 all = np.sum(results)
 TP = np.sum(results[:2,:2]) / all
 FN = np.sum(results[:2,2]) / all

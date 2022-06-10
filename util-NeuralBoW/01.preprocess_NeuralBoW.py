@@ -84,9 +84,11 @@ def compare_sim_and_ref(sim: Sentence, ref: Sentence, stopwords):
 def transform_format(args):
 
     # Load data
-    with open(args.src, 'r') as f:
+    src_file = args.in_dir + args.prefix + '.' + args.in_suffix_src
+    with open(src_file, 'r') as f:
         src_sims_orig =  f.readlines()
-    with open(args.ref, 'r') as f:
+    trg_file = args.in_dir + args.prefix + '.' + args.in_suffix_trg
+    with open(trg_file, 'r') as f:
         ref_orig =  f.readlines()
 
     spacy_en, sw_en, spacy_ja, sw_ja = get_stopword()   # ストップワード作成
@@ -127,8 +129,10 @@ def transform_format(args):
         
         tmp = src_sims.strip().split(' {} '.format(args.src_split_token))
         src  =  Sentence('SRC', 'en', tmp[0])
-        sims = [Sentence('SIM', 'en', tmp[i]) for i in range(1,len(tmp))]
+        sims = [Sentence('SIM', 'en', tmp[i]) for i in range(1,len(tmp))][:int(args.topk)]
         ref  =  Sentence('REF', 'en', ref.strip())
+
+        #print(len(sims))
 
         if i % 1000 == 0:
             print('i:{}'.format(i))
@@ -166,16 +170,19 @@ def transform_format(args):
         numofsim.append('{}\n'.format(j+1))
 
 
-    with open(args.out_in4oracle, 'w') as f:
+
+    out_oracle_path = args.out_oracle_dir + args.prefix
+    with open(out_oracle_path + '.' + args.out_suffix_src, 'w') as f:
         f.writelines(in4oracle)
-    with open(args.out_ref4oracle, 'w') as f:
+    with open(out_oracle_path + '.' + args.out_suffix_trg, 'w') as f:
         f.writelines(ref4oracle)
 
-    with open(args.out_in4nbow, 'w') as f:
+    out_NBoW_path = args.out_NBoW_dir + args.prefix
+    with open(out_NBoW_path + '.in4nbow', 'w') as f:
         f.writelines(in4nbow)
-    with open(args.out_ref4nbow, 'w') as f:
+    with open(out_NBoW_path + '.ref4nbow', 'w') as f:
         f.writelines(ref4nbow)
-    with open(args.out_numofsim, 'w') as f:
+    with open(out_NBoW_path + '.numofsim', 'w') as f:
         f.writelines(numofsim)
 
 
@@ -183,19 +190,23 @@ def transform_format(args):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-src')
-    parser.add_argument('-sim')
-    parser.add_argument('-ref')
+    parser.add_argument('-prefix')
+
+    # input
+    parser.add_argument('-in_dir')
+    parser.add_argument('-in_suffix_src')
+    parser.add_argument('-in_suffix_trg')
+
+    # output
+    parser.add_argument('-out_oracle_dir')
+    parser.add_argument('-out_NBoW_dir')
+    parser.add_argument('-out_suffix_src')
+    parser.add_argument('-out_suffix_trg')
+
+    parser.add_argument('-topk')
 
     parser.add_argument('-src_split_token', default='|')
     parser.add_argument('-out_split_token', default='|')
-
-    parser.add_argument('-out_in4oracle')
-    parser.add_argument('-out_ref4oracle')
-
-    parser.add_argument('-out_in4nbow')
-    parser.add_argument('-out_ref4nbow')
-    parser.add_argument('-out_numofsim')
 
     args = parser.parse_args()
 
