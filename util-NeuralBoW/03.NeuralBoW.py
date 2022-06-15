@@ -7,6 +7,7 @@ import argparse
 import itertools
 import pprint
 
+
 def get_stopword():
     spacy_ja = spacy.load('ja_core_news_sm')
     spacy_en = spacy.load('en_core_web_sm')
@@ -14,6 +15,7 @@ def get_stopword():
     sw_en = set(spacy.lang.en.stop_words.STOP_WORDS)
     sw_ja = set(spacy.lang.ja.stop_words.STOP_WORDS)
     return spacy_en, sw_en, spacy_ja, sw_ja
+
 
 def load_data(args, only_test=False):
     def load_each_data(in4nbow, ref4nbow, shuffle=False):
@@ -39,13 +41,16 @@ def load_data(args, only_test=False):
 
     if only_test == False:
         train_data = load_each_data(args.train_in4nbow, args.train_ref4nbow)
-        dev_data   = load_each_data(args.dev_in4nbow, args.dev_ref4nbow)
+        dev_data = load_each_data(args.dev_in4nbow, args.dev_ref4nbow)
 
-        train_df = pd.DataFrame(train_data, columns=['sentence_id', 'words', 'labels'])
-        dev_df = pd.DataFrame(dev_data, columns=['sentence_id', 'words', 'labels'])
+        train_df = pd.DataFrame(train_data, columns=[
+                                'sentence_id', 'words', 'labels'])
+        dev_df = pd.DataFrame(
+            dev_data, columns=['sentence_id', 'words', 'labels'])
 
-    test_data  = load_each_data(args.test_in4nbow, args.test_ref4nbow)
-    test_df = pd.DataFrame(test_data, columns=['sentence_id', 'words', 'labels'])
+    test_data = load_each_data(args.test_in4nbow, args.test_ref4nbow)
+    test_df = pd.DataFrame(test_data, columns=[
+                           'sentence_id', 'words', 'labels'])
 
     return train_df, dev_df, test_df
 
@@ -69,9 +74,9 @@ def train(args, train_df, dev_df, test_df):
 
     # モデルの作成
     model = NERModel(
-        'xlmroberta', 
-        'xlm-roberta-large', 
-        args=model_args, 
+        'xlmroberta',
+        'xlm-roberta-large',
+        args=model_args,
         use_cuda=True,
         cuda_device=1)
 
@@ -90,7 +95,7 @@ def eval(args):
         input = f.readlines()
     with open(args.test_ref4nbow, 'r') as f:
         ref = f.readlines()
-    
+
     # ラベル設定
     model_args = NERArgs()
     model_args.labels_list = ['B', 'I', 'O']
@@ -100,8 +105,8 @@ def eval(args):
 
     # モデルの作成
     model = NERModel(
-        'xlmroberta', 
-        str(args.output_dir) + '/outputs', 
+        'xlmroberta',
+        str(args.output_dir) + '/outputs',
         args=model_args)
 
     predictions, raw_outputs = model.predict(input)
@@ -143,9 +148,8 @@ def predict(args):
         with open(numofsim, 'r') as f:
             numofsim = f.readlines()
         numofsim_list = [int(x.strip()) for x in numofsim]
-        
 
-        ##### for debug
+        # for debug
         # input = input[:1000]
         # ref = ref[:1000]
         # numofsim_list = numofsim_list[:1000]
@@ -157,15 +161,15 @@ def predict(args):
         model_args.reprocess_input_data = True
         model_args.use_cuda = True
         model_args.max_seq_length = 512
-        model_args.eval_batch_size = 256
+        model_args.eval_batch_size = 128
 
         model_args.use_multiprocessing_for_evaluation = True
 
         # モデルの作成
         model = NERModel(
-            'xlmroberta', 
-            str(args.output_dir) + '/outputs', 
-            args=model_args, 
+            'xlmroberta',
+            str(args.output_dir) + '/outputs',
+            args=model_args,
             use_cuda=True)
 
         predictions = []
@@ -173,10 +177,10 @@ def predict(args):
         div_num = len(input) // chunk_size + 1
         print('# of Division: {}'.format(div_num))
         for i in range(div_num):
-            print('No.{}/{}'.format(i+1,div_num))
-            _predictions, _raw_outputs = model.predict(input[chunk_size * i:chunk_size * (i+1)])
+            print('No.{}/{}'.format(i+1, div_num))
+            _predictions, _raw_outputs = model.predict(
+                input[chunk_size * i:chunk_size * (i+1)])
             predictions += _predictions
-
 
         # 分析
         bio_counts = [[0] * 3 for i in range(3)]
@@ -187,7 +191,6 @@ def predict(args):
         #    I     |   |   |
         #    O     |   |   |
 
-        
         assist_vocabs = []
         out_sent_list = []
 
@@ -195,24 +198,24 @@ def predict(args):
         out_sent_list_with_arbitral_simnum = [[] for _ in range(int(topk))]
 
         # ストップワード作成
-        spacy_en, sw_en, spacy_ja, sw_ja = get_stopword()   
-        sw_general = set([  'について',
-                            'として', 
-                            'による', 'により', 'によって', 
-                            'これら',
-                            'における', 'において',
-                            'に関する', 'に関して',
-                            'に対する', 'に対して',
-                            '及び', 'および'])
+        spacy_en, sw_en, spacy_ja, sw_ja = get_stopword()
+        sw_general = set(['について',
+                          'として',
+                          'による', 'により', 'によって',
+                          'これら',
+                          'における', 'において',
+                          'に関する', 'に関して',
+                          'に対する', 'に対して',
+                          '及び', 'および'])
         sw_one_bite = set(list('1234567890!"#$%&\'()*+-.,/:;<=>?@[]^_`{|}~¥ '))
-        sw_two_bite = set(list('１２３４５６７８９０！”＃＄％＆’（）＊＋ー。、＼：；＜＝＞？＠「」＾＿｀『｜』〜￥　，．・／‐［］'))
+        sw_two_bite = set(
+            list('１２３４５６７８９０！”＃＄％＆’（）＊＋ー。、＼：；＜＝＞？＠「」＾＿｀『｜』〜￥　，．・／‐［］'))
         stopwords = sw_en | sw_ja | sw_general | sw_one_bite | sw_two_bite
 
-
-        sentence_no = 0 # 文番号。1文当たり約10文の類似文があるが、ものによって異なるためこの変数で管理。
+        sentence_no = 0  # 文番号。1文当たり約10文の類似文があるが、ものによって異なるためこの変数で管理。
         sim_count = 0   # 類似文の数
 
-        assist_phrases=''
+        assist_phrases = ''
 
         for i, (input_sent, ref_tag, preds) in enumerate(zip(input, ref, predictions)):
             pred_vocab_list = [list(x.keys())[0] for x in preds]
@@ -236,7 +239,6 @@ def predict(args):
                 else:
                     assist_phrases += '| '
 
-
             # 利用した類似文の数をカウントアップ
             sim_count += 1
 
@@ -244,7 +246,8 @@ def predict(args):
             # 利用する類似文の数ごとに分けて処理。##################################################
 
             assist_phrases_for_analyze = assist_phrases.split('|')
-            assist_phrases_for_analyze = list(set([x.strip() for x in assist_phrases_for_analyze]) - set(['']))
+            assist_phrases_for_analyze = list(
+                set([x.strip() for x in assist_phrases_for_analyze]) - set(['']))
 
             # 部分的な重複を排除
             # あるフレーズが別のフレーズの部分集合になっている時は削除
@@ -256,24 +259,27 @@ def predict(args):
                         break
                 else:
                     # forがbreakで抜けなかったとき
-                    uniq_assist_phrases_for_analyze.append(assist_phrases_for_analyze[current_id])
+                    uniq_assist_phrases_for_analyze.append(
+                        assist_phrases_for_analyze[current_id])
 
-            out_sent_for_analyze = out_sent + ' {} '.format('|').join(uniq_assist_phrases_for_analyze)
-            
+            out_sent_for_analyze = out_sent + \
+                ' {} '.format('|').join(uniq_assist_phrases_for_analyze)
 
             if sim_count == numofsim_list[sentence_no]:
                 for j in range(sim_count-1, int(topk)):
-                    out_sent_list_with_arbitral_simnum[j].append(out_sent_for_analyze + '\n')
+                    out_sent_list_with_arbitral_simnum[j].append(
+                        out_sent_for_analyze + '\n')
             else:
-                out_sent_list_with_arbitral_simnum[sim_count-1].append(out_sent_for_analyze + '\n')
+                out_sent_list_with_arbitral_simnum[sim_count -
+                                                   1].append(out_sent_for_analyze + '\n')
             ##################################################################################
-
 
             # 類似文の数(sim_count)が、numofsim_listに格納されている文数に一致すると、
             # assis_vocabが参考情報としてまとめられ、リセットされる
             if sim_count == numofsim_list[sentence_no]:
                 assist_phrases = assist_phrases.split('|')
-                assist_phrases = set([x.strip() for x in assist_phrases]) - set([''])
+                assist_phrases = set([x.strip()
+                                     for x in assist_phrases]) - set([''])
 
                 # 部分的な重複を排除
                 # あるフレーズが別のフレーズの部分集合になっている時は削除
@@ -293,7 +299,7 @@ def predict(args):
                 out_sent_list.append(out_sent + '\n')
 
                 # Reset
-                assist_phrases=''
+                assist_phrases = ''
                 sentence_no += 1
                 sim_count = 0
 
@@ -310,12 +316,12 @@ def predict(args):
 
         return 0
 
-    predidct_one(args.test_in4nbow, args.test_ref4nbow, args.test_numofsim, str(args.corpus_name)+'_test' + args.output_file_suffix, args.topk_of_sim)
+    predidct_one(args.test_in4nbow, args.test_ref4nbow, args.test_numofsim, str(
+        args.corpus_name)+'_test' + args.output_file_suffix, args.topk_of_sim)
     # predidct_one(args.dev_in4nbow, args.dev_ref4nbow, args.dev_numofsim, 'aspec_dev.assisted.src.tkn')
     # predidct_one(args.train_in4nbow, args.train_ref4nbow, args.train_numofsim, 'aspec_train_h40000.assisted.src.tkn')
 
     return 0
-
 
 
 def main():
@@ -352,7 +358,6 @@ def main():
     transformers_logger = logging.getLogger("transformers")
     transformers_logger.setLevel(logging.WARNING)
 
-
     if args.only_predict == False:
         train_df, dev_df, test_df = load_data(args)
         train(args, train_df, dev_df, test_df)
@@ -362,4 +367,3 @@ def main():
 
 
 main()
-
