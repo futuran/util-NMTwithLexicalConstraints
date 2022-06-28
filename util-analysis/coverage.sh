@@ -12,7 +12,7 @@ if [ "$MODEL" = "" ]; then
 fi
 
 
-TYPE="_srcsrc"
+TYPE="_srctrg"
 dir_ref=../../data/${CORPUS}/
 dir_nfr=../../data/${CORPUS}.$MODEL/merge$TYPE.top100/
 
