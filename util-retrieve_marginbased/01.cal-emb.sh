@@ -12,7 +12,7 @@ mkdir -p ${DIR}.labse/emb
 # mkdir -p ${DIR}.sbert/emb
 # mkdir -p ${DIR}.msbert_finetuned/emb
 
-for prefix in test dev train_h40000 train ; do
+for prefix in test valid train ; do
     python 01.cal-emb.py    -s  ${DIR}/${CORPUS}_$prefix.en.tkn \
                             -t  ${DIR}/${CORPUS}_$prefix.fr.tkn \
                             -so ${DIR}.labse/emb/${prefix}.en.emb \

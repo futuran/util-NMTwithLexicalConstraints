@@ -10,11 +10,11 @@ if [ "$MODEL" = "" ]; then
     exit
 fi
 
-mkdir ${DIR}.$MODEL/match_srctrg
+mkdir ${DIR}.$MODEL/match_srctgt
 mkdir ${DIR}.$MODEL/match_srcsrc
 
 # 2 search by faiss
-for prefix in dev test train_h40000
+for prefix in valid test train
 do
     if [ $prefix = 'test' ]; then
         PM='--include-perfect-match'
@@ -26,9 +26,9 @@ do
     python 02.search_by_faiss.py \
         -q    ${DIR}.$MODEL/emb/${prefix}.en.emb \
         -qt   ${DIR}/${CORPUS}_$prefix.en.tkn \
-        -tms  ${DIR}.$MODEL/emb/train.ja.emb \
+        -tms  ${DIR}.$MODEL/emb/train.fr.emb \
         -tmst ${DIR}/${CORPUS}_train.en.tkn \
-        -o    ${DIR}.$MODEL/match_srctrg/${prefix}.match \
+        -o    ${DIR}.$MODEL/match_srctgt/${prefix}.match \
         -k 100 -d 768 $PM
     wait
 
