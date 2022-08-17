@@ -12,6 +12,7 @@ fi
 
 mkdir ${DIR}.$MODEL/match_srctgt
 mkdir ${DIR}.$MODEL/match_srcsrc
+mkdir ${DIR}.$MODEL/match_srcall
 
 # 2 search by faiss
 for prefix in valid test train
@@ -39,6 +40,17 @@ do
         -tms  ${DIR}.$MODEL/emb/train.en.emb \
         -tmst ${DIR}/${CORPUS}_train.en.tkn \
         -o    ${DIR}.$MODEL/match_srcsrc/${prefix}.match \
+        -k 100 -d 768 $PM
+    wait
+
+    # 検索対象は双方
+    python 02.search_by_faiss.py \
+        -q    ${DIR}.$MODEL/emb/${prefix}.en.emb \
+        -qt   ${DIR}/${CORPUS}_$prefix.en.tkn \
+        -tms  ${DIR}.$MODEL/emb/train.en.emb \
+        -tmt  ${DIR}.$MODEL/emb/train.fr.emb \
+        -tmst ${DIR}/${CORPUS}_train.en.tkn \
+        -o    ${DIR}.$MODEL/match_srcall/${prefix}.match \
         -k 100 -d 768 $PM
     wait
 

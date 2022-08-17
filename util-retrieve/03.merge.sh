@@ -11,10 +11,10 @@ if [ "$MODEL" = "" ]; then
 fi
 
 # 3 merge
-for TYPE in _srcsrc _srctgt; do
-    for k in 1 10 100; do
+for TYPE in _srcsrc _srctgt _srcall; do
+    for k in 1 10; do
         mkdir ${DIR}.$MODEL/merge$TYPE.top$k
-        for prefix in test valid train ; do
+        for prefix in test valid train  ; do
             python 03.merge.py \
                 -s ${DIR}/${CORPUS}_$prefix.en.tkn \
                 -t ${DIR}/${CORPUS}_$prefix.fr.tkn \
