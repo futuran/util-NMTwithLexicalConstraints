@@ -80,30 +80,31 @@ def main():
 
         new_src_match_args.append(np.argsort(-np.array([x[1] for x in tmp])))
         y = np.argsort(-np.array([x[1] for x in tmp]))
-        import matplotlib.pyplot as plt
-        x = [i for i in range(len(y))]
-        plt.scatter(x, y, s=1)
-        # exit()
-        if idx_s == 20:
-            break
+
+        # import matplotlib.pyplot as plt
+        # x = [i for i in range(len(y))]
+        # plt.scatter(x, y, s=1)
+        # # exit()
+        # if idx_s == 20:
+        #     break
 
         tmp.sort(key=lambda x: x[1], reverse=True)
         new_src_match.append(tmp)
     
 
-    plt.xlabel("Original Rank")
-    plt.ylabel("Reranked Rank")
-    plt.grid(True)
-    plt.savefig("fig.png",  dpi=300)
-    import csv
-    with open('./data.csv', 'w') as file:
-        writer = csv.writer(file, lineterminator='\n')
-        writer.writerows(new_src_match_args)
+    # plt.xlabel("Original Rank")
+    # plt.ylabel("Reranked Rank")
+    # plt.grid(True)
+    # plt.savefig("fig.png",  dpi=300)
+    # import csv
+    # with open('./data.csv', 'w') as file:
+    #     writer = csv.writer(file, lineterminator='\n')
+    #     writer.writerows(new_src_match_args)
 
 
-    # with open(args.output, 'w') as f:
-    #     for l in generate_match_lines(new_src_match):
-    #         f.write(l + '\n')
+    with open(args.output, 'w') as f:
+        for l in generate_match_lines(new_src_match):
+            f.write(l + '\n')
 
 
 if __name__ == '__main__':

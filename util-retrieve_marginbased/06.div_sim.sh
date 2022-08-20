@@ -12,7 +12,7 @@ if [ "$MODEL" = "" ]; then
     exit
 fi
 
-DIR=../../data/$CORPUS.$MODEL/merge_srcsrc.top10
+DIR=../../data/$CORPUS.$MODEL/merge_srctgt_margin.top10
 mkdir $DIR/tmp
 mkdir $DIR.div
 
